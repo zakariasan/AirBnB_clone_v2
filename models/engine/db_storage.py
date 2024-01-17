@@ -41,15 +41,16 @@ class DBStorage:
         if cls:
             if type(cls) is str:
                 cls = eval(cls)
-            query = self.__session.query(cls)
+            query = self.__session.query(cls).all()
             for elem in query:
                 key = "{}.{}".format(type(elem).__name__, elem.id)
                 NewDic[key] = elem
         else:
             for key, val in classes.items():
-                for row in self.__session.query(val):
-                    NewDic.update({'{}.{}'.
-                                  format(type(row).__name__, row.id,): row})
+                query_rslt = self.__session.query(val).all()
+                for row in query_rslt:
+                    item = '{}.{}'.format(key, row.id)
+                    NewDic[item] = row
         return NewDic
 
     def new(self, obj):
