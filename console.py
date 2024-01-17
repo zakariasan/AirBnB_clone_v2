@@ -120,12 +120,19 @@ class HBNBCommand(cmd.Cmd):
                 raise SyntaxError()
             ArgsList = args.split(" ")
             kwargs = {}
-            for arg in ArgsList[1:]:
+
+            if ArgsList[0] not in self.classes:
+                raise NameError()
+
+            for arg in ArgsList[2:]:
                 Args = arg.split("=")
-                Args[1] = eval(Args[1])
-                if type(Args[1]) is str:
-                    Args[1] = Args[1].replace("_", " ").replace('"', '\\"')
-                kwargs[Args[0]] = Args[1]
+                if len(Args) == 2:
+                    Args[1] = eval(Args[1])
+
+                    if type(Args[1]) is str:
+                        Args[1] = Args[1].replace("_", " ").replace('"', '\\"')
+
+                    kwargs[Args[0]] = Args[1]
         except SyntaxError:
             print("** class name missing **")
         except NameError:
