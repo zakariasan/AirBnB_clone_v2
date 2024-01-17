@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+import models
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -137,10 +138,10 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         except NameError:
             print("** class doesn't exist **")
-        new_instance = eval("{}()".format(ArgsList[0]))
+        new_instance = eval("{}(**kwargs)".format(ArgsList[0]))
         for key, val in kwargs.items():
             setattr(new_instance, key, val)
-        storage.save()
+        new_instance.save()
         print(new_instance.id)
 
     def help_create(self):
