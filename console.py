@@ -124,22 +124,21 @@ class HBNBCommand(cmd.Cmd):
             if ArgsList[0] not in self.classes:
                 raise NameError()
 
-            for arg in ArgsList[2:]:
-                Args = arg.split("=")
-                if len(Args) == 2:
-                    Args[1] = eval(Args[1])
-
-                    if type(Args[1]) is str:
-                        Args[1] = Args[1].replace("_", " ").replace('"', '\\"')
-
-                    kwargs[Args[0]] = Args[1]
+            for pair in ArgsList[1:]:
+                k, v = pair.split("=")
+                if isinstance(v, int):
+                    kwargs[k] = int(v)
+                elif isinstance(v, float):
+                    kwargs[k] = float(v)
+                else:
+                    v = v.replace('_', ' ')
+                    kwargs[k] = v.strip('"\'')
         except SyntaxError:
             print("** class name missing **")
         except NameError:
             print("** class doesn't exist **")
-        new_instance = eval("{}(**kwargs)".format(ArgsList[0]))
-        for key, val in kwargs.items():
-            setattr(new_instance, key, val)
+        new_instance = self.classes[ArgsList[0]](**kwargs)
+        storage.new(new_instance)
         new_instance.save()
         print(new_instance.id)
 
