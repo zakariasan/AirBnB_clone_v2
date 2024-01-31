@@ -6,12 +6,9 @@ import os
 
 
 def do_pack():
-    try:
         if not os.path.exists("versions"):
             local('mkdir versions')
         CurrentDateTime = datetime.now().strftime("%Y%m%d%H%M%S")
         ArchivePath = 'versions/web_static_{}.tgz'.format(CurrentDateTime)
         local('tar -cvzf {} web_static'.format(ArchivePath))
         return ArchivePath
-    except Exception:
-        return None
