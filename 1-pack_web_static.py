@@ -13,5 +13,5 @@ def do_pack():
         ArchivePath = 'versions/web_static_{}.tgz'.format(CurrentDateTime)
         local('tar -cvzf {} web_static'.format(ArchivePath))
         return ArchivePath
-    except Exception as e:
+    except Exception:
         return None
