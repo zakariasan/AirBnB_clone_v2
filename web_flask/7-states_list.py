@@ -16,7 +16,7 @@ def close_storage(exception):
 @app.route('/states_list', strict_slashes=False)
 def states_list():
     """ Display states list """
-    states = storage.all(State)
+    states = sorted(list(storage.all("State").values()), key=lambda x: x.name)
     return render_template('7-states_list.html', states=states)
 
 
