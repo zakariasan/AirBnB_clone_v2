@@ -14,8 +14,8 @@ def close_storage(exception):
 
 
 @app.route('/states/', strict_slashes=False)
-@app.route('/states/<id>', strict_slashes=False)
-def display_states_and_cities(id=None):
+@app.route('/states/<state_id>', strict_slashes=False)
+def display_states_and_cities(state_id=None):
     """ Display states and cities """
     states = storage.all(State)
 
