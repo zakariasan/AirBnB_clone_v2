@@ -15,8 +15,8 @@ def close_storage(exception):
 
 
 @app.route('/cities_by_states', strict_slashes=False)
-def display_cities_by_states():
-    """ Display cities grouped by states """
+def cities_by_states():
+    """ Display cities by states """
     states = storage.all(State)
     return render_template('8-cities_by_states.html', states=states)
 

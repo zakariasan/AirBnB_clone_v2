@@ -1,24 +1,24 @@
 #!/usr/bin/python3
-"""Script to start a Flask web application"""
-
+""" Flask WebApp """
 from flask import Flask, render_template
 from models import storage
-from models import *
+from models.state import State
+
 app = Flask(__name__)
+
+
+@app.teardown_appcontext
+def close_storage(exception):
+    """ Close storage """
+    storage.close()
 
 
 @app.route('/states_list', strict_slashes=False)
 def states_list():
-    """display page of listes with the states """
-    states = sorted(list(storage.all("State").values()), key=lambda x: x.name)
+    """ Display states list """
+    states = storage.all(State)
     return render_template('7-states_list.html', states=states)
 
 
-@app.teardown_appcontext
-def teardown_db(exception):
-    """closes the storage"""
-    storage.close()
-
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='5000')
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5000)
