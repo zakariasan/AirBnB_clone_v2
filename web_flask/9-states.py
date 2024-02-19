@@ -14,23 +14,20 @@ def close_storage(exception):
 
 
 @app.route('/states/', strict_slashes=False)
-@app.route('/states/<state_id>', strict_slashes=False)
-def display_states_and_cities(state_id=None):
-    """ Display states and cities """
+def display_states():
+    """ Display states """
     states = storage.all(State)
+    return render_template('7-states_list.html', states=states)
 
-    if not id:
-        state_names = {state.id: state.name for state in states.values()}
-        return render_template('7-states_list.html', Table="States",
-                               items=state_names)
 
-    state_key = "State." + id
-    if state_key in states:
-        state = states[state_key]
-        return render_template('9-states.html', Table=f"State: {state.name}",
-                               items=state)
-
-    return render_template('9-states.html', items=None)
+@app.route('/states/<state_id>', strict_slashes=False)
+def display_cities(state_id):
+    """ Display cities of a state """
+    states = storage.all(State)
+    if state_id in states:
+        state = states[state_id]
+        return render_template('9-states.html', state=state)
+    return render_template('9-states.html', state=None)
 
 
 if __name__ == "__main__":
