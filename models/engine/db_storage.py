@@ -1,21 +1,11 @@
-#!/usr/bin/python3
-"""This module defines a class to manage database storage for hbnb clone"""
-from models.base_model import Base
-from models.state import State
-from models.city import City
-from models.user import User
-from models.place import Place
-from models.review import Review
-from models.amenity import Amenity
 from os import getenv
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy import (create_engine)
+from sqlalchemy import create_engine
+from models.base_model import Base
 
-
-classes = {'State': State, 'City': City,
-           'User': User, 'Place': Place,
-           'Review': Review, 'Amenity': Amenity}
-
+classes = {'State': 'State', 'City': 'City',
+           'User': 'User', 'Place': 'Place',
+           'Review': 'Review', 'Amenity': 'Amenity'}
 
 class DBStorage:
     """Connect and create tables"""
@@ -37,6 +27,13 @@ class DBStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of __object__"""
+        from models.state import State
+        from models.city import City
+        from models.user import User
+        from models.place import Place
+        from models.review import Review
+        from models.amenity import Amenity
+
         NewDic = {}
         if cls:
             if type(cls) is str:
@@ -47,7 +44,8 @@ class DBStorage:
                 NewDic[key] = elem
         else:
             for key, val in classes.items():
-                query_rslt = self.__session.query(val).all()
+                cls = eval(val)
+                query_rslt = self.__session.query(cls).all()
                 for row in query_rslt:
                     item = '{}.{}'.format(key, row.id)
                     NewDic[item] = row
@@ -72,3 +70,7 @@ class DBStorage:
         session = sessionmaker(bind=self.__engine,
                                expire_on_commit=False)
         self.__session = scoped_session(session)
+
+    def close(self):
+        """ remove() method on the private session attribute"""
+        self.__session.close()
