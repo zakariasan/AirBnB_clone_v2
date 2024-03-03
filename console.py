@@ -10,6 +10,7 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+import shlex
 
 
 class HBNBCommand(cmd.Cmd):
@@ -23,6 +24,7 @@ class HBNBCommand(cmd.Cmd):
                'State': State, 'City': City, 'Amenity': Amenity,
                'Review': Review
               }
+
     dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
     types = {
              'number_rooms': int, 'number_bathrooms': int,
@@ -113,34 +115,49 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
+    def do_create(self, arg):
         """ Create an object of any class"""
-        try:
-            if not args:
-                raise SyntaxError()
-            ArgsList = args.split(" ")
-            kwargs = {}
+        args = arg.split()
 
-            if ArgsList[0] not in self.classes:
-                raise NameError()
-
-            for pair in ArgsList[1:]:
-                k, v = pair.split("=")
-                if isinstance(v, int):
-                    kwargs[k] = int(v)
-                elif isinstance(v, float):
-                    kwargs[k] = float(v)
-                else:
-                    v = v.replace('_', ' ')
-                    kwargs[k] = v.strip('"\'')
-        except SyntaxError:
+        if len(args) == 0:
             print("** class name missing **")
-        except NameError:
+            return
+
+        new_args = []
+        for a in args:
+            start_idx = a.find("=")
+            a = a[0: start_idx] + a[start_idx:].replace('_', ' ')
+            new_args.append(a)
+
+        if new_args[0] in self.classes:
+            new_instance = self.classes[new_args[0]]()
+            new_dict = {}
+            for a in new_args:
+                if a != new_args[0]:
+                    new_list = a.split('=')
+                    new_dict[new_list[0]] = new_list[1]
+
+            for k, v in new_dict.items():
+                if v[0] == '"':
+                    v_list = shlex.split(v)
+                    new_dict[k] = v_list[0]
+                    setattr(new_instance, k, new_dict[k])
+                else:
+                    try:
+                        if type(eval(v)).__name__ == 'int':
+                            v = eval(v)
+                    except:
+                        continue
+                    try:
+                        if type(eval(str(v))).__name__ == 'float':
+                            v = eval(v)
+                    except:
+                        continue
+                    setattr(new_instance, k, v)
+            new_instance.save()
+            print(new_instance.id)
+        else:
             print("** class doesn't exist **")
-        new_instance = self.classes[ArgsList[0]](**kwargs)
-        storage.new(new_instance)
-        new_instance.save()
-        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """

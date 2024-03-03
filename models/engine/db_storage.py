@@ -7,6 +7,7 @@ classes = {'State': 'State', 'City': 'City',
            'User': 'User', 'Place': 'Place',
            'Review': 'Review', 'Amenity': 'Amenity'}
 
+
 class DBStorage:
     """Connect and create tables"""
     __engine = None
@@ -62,14 +63,14 @@ class DBStorage:
     def delete(self, obj=None):
         """delete an element in the table"""
         if obj:
-            self.session.delete(obj)
+            self.__session.delete(obj)
 
     def reload(self):
         """Create a database session"""
         Base.metadata.create_all(self.__engine)
-        session = sessionmaker(bind=self.__engine,
-                               expire_on_commit=False)
-        self.__session = scoped_session(session)
+        session_p = sessionmaker(bind=self.__engine,
+                                 expire_on_commit=False)
+        self.__session = scoped_session(session_p)
 
     def close(self):
         """ remove() method on the private session attribute"""
