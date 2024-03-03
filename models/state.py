@@ -8,8 +8,8 @@ import shlex
 
 class State(BaseModel, Base):
     """ State class """
+    __tablename__ = "states"
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
-        __tablename__ = "states"
         name = Column(String(120), nullable=False)
         cities = relationship("City", cascade='all, delete, delete-orphan',
                               backref="state")
