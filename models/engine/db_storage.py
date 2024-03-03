@@ -6,6 +6,11 @@ from models.base_model import Base
 classes = {'State': 'State', 'City': 'City',
            'User': 'User', 'Place': 'Place',
            'Review': 'Review', 'Amenity': 'Amenity'}
+user = getenv("HBNB_MYSQL_USER")
+passwd = getenv("HBNB_MYSQL_PWD")
+db = getenv("HBNB_MYSQL_DB")
+host = getenv("HBNB_MYSQL_HOST")
+env = getenv("HBNB_ENV")
 
 
 class DBStorage:
@@ -14,12 +19,6 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        user = getenv("HBNB_MYSQL_USER")
-        passwd = getenv("HBNB_MYSQL_PWD")
-        db = getenv("HBNB_MYSQL_DB")
-        host = getenv("HBNB_MYSQL_HOST")
-        env = getenv("HBNB_ENV")
-
         self.__engine = create_engine('mysql+mysqldb://{}:{}@{}/{}'
                                       .format(user, passwd, host, db),
                                       pool_pre_ping=True)
