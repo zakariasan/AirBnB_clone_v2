@@ -34,22 +34,22 @@ class DBStorage:
         from models.review import Review
         from models.amenity import Amenity
 
-        NewDic = {}
+        objects = {}
         if cls:
-            if type(cls) is str:
-                cls = eval(cls)
-            query = self.__session.query(cls).all()
-            for elem in query:
-                key = "{}.{}".format(type(elem).__name__, elem.id)
-                NewDic[key] = elem
+            if isinstance(cls, str) and cls in classes:
+                cls = classes[cls]
+            if cls in classes.values():
+                query_result = self.__session.query(cls).all()
+                for obj in query_result:
+                    key = f"{obj.__class__.__name__}.{obj.id}"
+                    objects[key] = obj
         else:
-            for key, val in classes.items():
-                cls = eval(val)
-                query_rslt = self.__session.query(cls).all()
-                for row in query_rslt:
-                    item = '{}.{}'.format(key, row.id)
-                    NewDic[item] = row
-        return NewDic
+            for class_name, class_obj in classes.items():
+                query_result = self.__session.query(class_obj).all()
+                for obj in query_result:
+                    key = f"{class_name}.{obj.id}"
+                    objects[key] = obj
+        return objects
 
     def new(self, obj):
         """Add an object to the current database"""

@@ -10,7 +10,7 @@ class State(BaseModel, Base):
     """ State class """
     __tablename__ = "states"
     if os.getenv('HBNB_TYPE_STORAGE') == 'db':
-        name = Column(String(120), nullable=False)
+        name = Column(String(128), nullable=False)
         cities = relationship("City", cascade='all, delete, delete-orphan',
                               backref="state")
     else:
